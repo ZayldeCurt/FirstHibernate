@@ -2,17 +2,12 @@ package sda.pl;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-import sda.pl.domain.Cart;
-import sda.pl.domain.Order;
-import sda.pl.domain.Stock;
-import sda.pl.domain.User;
-import sda.pl.repository.CartRepository;
-import sda.pl.repository.OrderRepository;
-import sda.pl.repository.ProductRepository;
-import sda.pl.repository.UserRepository;
+import sda.pl.domain.*;
+import sda.pl.repository.*;
 import sun.security.ssl.HandshakeInStream;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 public class App {
@@ -103,13 +98,29 @@ public class App {
 //                .build();
 
 
-        User user =  UserRepository.findUser(1L).get();
-        Optional<Cart> cartO = CartRepository.findCart(1L);
-        Cart cart = cartO.get();
+//        User user =  UserRepository.findUser(1L).get();
+//        Optional<Cart> cartO = CartRepository.findCart(1L);
+//        Cart cart = cartO.get();
+//
+//        Order newOrder = cart.createNewOrder();
+//
+//        OrderRepository.saveOrder(newOrder);
 
-        Order newOrder = cart.createNewOrder();
 
-        OrderRepository.saveOrder(newOrder);
+//        Optional<Product> product1 = ProductRepository.findProduct(1L);
+//        User user =  UserRepository.findUser(1L).get();
+//        ProductRating productRating = ProductRating.builder()
+//                .product(product1.get())
+//                .description("opis test")
+//                .isActive(true)
+//                .rate(5)
+//                .user(user)
+//                .build();
+
+//        ProductRatingRepository.saveOrUpdate(productRating);
+        List<ProductRating> allActiveByProductId = ProductRatingRepository.findAllActiveByProductId(1L);
+        Optional<ProductRating> productRating1 = ProductRatingRepository.findProductRating(1L);
+
 
     }
 }

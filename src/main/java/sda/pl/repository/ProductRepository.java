@@ -2,10 +2,10 @@ package sda.pl.repository;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-import sda.pl.Color;
+import sda.pl.domain.Color;
 import sda.pl.HibernateUtil;
-import sda.pl.Product;
-import sda.pl.domain.User;
+import sda.pl.domain.Product;
+import sda.pl.domain.WareHauseName;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -177,7 +177,7 @@ public class ProductRepository {
             session.getTransaction().begin();
             Product product = session.find(Product.class, id);
 //            product.setName(product.getName()+" ++");
-            product.addStock(User.WareHauseName.WEB,new BigDecimal(25));
+            product.addStock(WareHauseName.WEB,new BigDecimal(25));
 //            product.getStockSet().clear();
             session.getTransaction().commit();
             return true;

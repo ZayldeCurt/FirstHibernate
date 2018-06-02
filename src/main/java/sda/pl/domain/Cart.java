@@ -1,17 +1,14 @@
 package sda.pl.domain;
 
 import lombok.*;
-import org.hibernate.Session;
-import sda.pl.Product;
+import sda.pl.core.ShopException;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Stream;
 
 @Entity
 @Data
@@ -24,12 +21,15 @@ public class Cart implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn
     User user;
 
     @OneToMany(mappedBy = "cart", fetch = FetchType.EAGER)
     Set<CartDetail> cartDetailSet;
+
+    @Transient
+    boolean valid;
 
     public void addProductToCart(Product product, Long amount){
         if(cartDetailSet == null){
@@ -37,7 +37,11 @@ public class Cart implements Serializable {
         }
 
         Optional<CartDetail> first = cartDetailSet.stream().filter(cd -> cd.getProduct().getId().equals(product.getId())).findFirst();
+        long sum = product.getSumStockForSale();
         if(!first.isPresent()){
+            if(amount>sum){
+                amount=sum;
+            }
             CartDetail newCartDetail = CartDetail.builder()
                     .amount(amount)
                     .price(product.getPrice())
@@ -46,7 +50,12 @@ public class Cart implements Serializable {
                     .build();
             cartDetailSet.add(newCartDetail);
         }else{
-            first.ifPresent(cd->cd.setAmount(cd.getAmount()+amount));
+//            first.ifPresent(cd->cd.setAmount(cd.getAmount()+amount));
+            CartDetail cd = first.get();
+            if(cd.getAmount()+amount>sum){
+                amount=sum-cd.getAmount();
+            }
+            cd.setAmount(cd.getAmount()+amount);
         }
     }
 
@@ -66,17 +75,37 @@ public class Cart implements Serializable {
 
     public void changeProductAmount(Product product, Long newAmount){
         if(newAmount<0L) newAmount=0L;
+        long sum = product.getSumStockForSale();
+
         Optional<CartDetail> productInCart = cartDetailSet.stream()
                 .filter(cd -> cd.getProduct().getId().equals(product.getId())).findFirst();
         if (productInCart.isPresent()) {
             CartDetail cartDetail = productInCart.get();
-            cartDetail.setAmount(newAmount);
+            if(newAmount>sum){
+                cartDetail.setAmount(sum);
+            }else{
+                cartDetail.setAmount(newAmount);
+            }
         }else{
             System.out.println("Warning: Product doesn't exist");
         }
     }
 
-    public Order createNewOrder(){
+    public void checkIsValid(){
+        setValid(true);
+        getCartDetailSet().forEach(cd->{
+            long sumStockForSale = cd.getProduct().getSumStockForSale();
+            if(sumStockForSale<cd.getAmount()){
+               setValid(false);
+            }
+        });
+    }
+
+    public Order createNewOrder() throws ShopException{
+        checkIsValid();
+        if(!valid){
+            throw new ShopException("Brak części produktów");
+        }
         Order order = Order.builder()
                 .cityName(this.getUser().cityName)
                 .date(LocalDateTime.now())

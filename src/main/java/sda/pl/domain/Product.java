@@ -1,7 +1,6 @@
-package sda.pl;
+package sda.pl.domain;
 
 import lombok.*;
-import sda.pl.domain.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -42,7 +41,7 @@ public class Product implements Serializable {
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, fetch=FetchType.EAGER)
     Set<Stock> stockSet;
 
-    public void addStock(User.WareHauseName name, BigDecimal amount){
+    public void addStock(WareHauseName name, BigDecimal amount){
         if(stockSet==null){
             stockSet=new HashSet<>();
         }
@@ -59,10 +58,18 @@ public class Product implements Serializable {
                 s.setAmount(s.getAmount().add(amount));
             });
         }
-
-
-
-
     }
 
+    public long getSumStockForSale() {
+        return getStockSet().stream().filter(stock -> !stock.getWareHauseName().equals(WareHauseName.COMPLAINT))
+                .mapToLong(s -> s.getAmount().longValue()).sum();
+    }
+
+    public void addProductRating(ProductRating productRating){
+        if(productRatingSet == null){
+            productRatingSet = new HashSet<>();
+        }
+        productRating.setProduct(this);
+        productRatingSet.add(productRating);
+    }
 }

@@ -1,7 +1,6 @@
 package sda.pl.domain;
 
 import lombok.*;
-import sda.pl.Price;
 
 import javax.persistence.*;
 import java.io.Serializable;

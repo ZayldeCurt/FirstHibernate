@@ -1,7 +1,8 @@
 package sda.pl;
 
 import org.junit.Test;
-import sda.pl.domain.User;
+import sda.pl.domain.Product;
+import sda.pl.domain.WareHauseName;
 import sda.pl.repository.ProductRepository;
 
 import java.math.BigDecimal;
@@ -16,7 +17,7 @@ public class ProductTest {
 //        Stock stock
         //When
         product.ifPresent(p->{
-            p.addStock(User.WareHauseName.MAIN, BigDecimal.ONE);
+            p.addStock(WareHauseName.MAIN, BigDecimal.ONE);
             ProductRepository.saveOrUpdateProduct(p);
         });
 

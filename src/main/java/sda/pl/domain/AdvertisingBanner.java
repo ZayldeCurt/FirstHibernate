@@ -1,5 +1,6 @@
 package sda.pl.domain;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,27 +8,25 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 @Entity
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Stock implements Serializable{
+
+public class AdvertisingBanner implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    BigDecimal amount;
+    String name;
 
-    @Enumerated(EnumType.STRING)
-    WareHauseName wareHauseName;
+    @Lob
+    byte[] image;
 
-    @JoinColumn
-    @ManyToOne
-    Product product;
+    boolean isForAll;
 
 
 

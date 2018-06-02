@@ -12,7 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(exclude = {"orderSet","cartSet","productRatingSet"} )
+@EqualsAndHashCode(exclude = {"orderSet","cart","productRatingSet"} )
 public class User implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,8 +30,8 @@ public class User implements Serializable{
     @OneToMany(mappedBy = "user")
     Set<Order> orderSet;
 
-    @OneToMany(mappedBy = "user")
-    Set<Cart> cartSet;
+    @OneToOne(mappedBy = "user")
+    Cart cart;
 
     @OneToMany(mappedBy = "user")
     Set<ProductRating> productRatingSet;
@@ -45,7 +45,21 @@ public class User implements Serializable{
         this.totalOrderPrice= totalOrderPrice;
     }
 
-    public static enum WareHauseName {
-        MAIN,WEB,COMPLAINT
+    public Cart createCart(){
+        Cart cart = new Cart();
+        cart.setUser(this);
+        return cart;
     }
+
+    public ProductRating rateProduct(int rate, String description, Product product){
+        ProductRating productRating = ProductRating.builder()
+                .isActive(false)
+                .user(this)
+                .product(product)
+                .rate(rate)
+                .description(description)
+                .build();
+        return productRating;
+    }
+
 }
