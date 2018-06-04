@@ -118,9 +118,12 @@ public class App {
 //                .build();
 
 //        ProductRatingRepository.saveOrUpdate(productRating);
-        List<ProductRating> allActiveByProductId = ProductRatingRepository.findAllActiveByProductId(1L);
-        Optional<ProductRating> productRating1 = ProductRatingRepository.findProductRating(1L);
 
+//        List<ProductRating> allActiveByProductId = ProductRatingRepository.findAllActiveByProductId(1L);
+//        Optional<ProductRating> productRating1 = ProductRatingRepository.findProductRating(1L);
 
+//        List<AdvertisingBanner> advertisingBanners = AdvertisingBannerRepository.fingAdvertisingBannerForUser(1L);
+        List<AdvertisingBanner> all = AdvertisingBannerRepository.findAll();
+        all.forEach(a -> System.out.println(a.getId()));
     }
 }

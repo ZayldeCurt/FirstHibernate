@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Set;
+
 
 @Entity
 @Data
@@ -27,6 +29,9 @@ public class AdvertisingBanner implements Serializable{
     byte[] image;
 
     boolean isForAll;
+
+    @ManyToMany(mappedBy = "advertisingBannerSet",cascade = CascadeType.ALL)
+    Set<User> userSet;
 
 
 

@@ -12,7 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(exclude = {"orderSet","cart","productRatingSet"} )
+@EqualsAndHashCode(exclude = {"orderSet","cart","productRatingSet","advertisingBannerSet"} )
 public class User implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +38,15 @@ public class User implements Serializable{
 
     @Transient
     BigDecimal totalOrderPrice;
+
+    @ManyToMany(cascade = CascadeType.ALL)//, fetch = FetchType.EAGER)
+    //join table do laczenia przez tabele dodatkowa
+    @JoinTable(
+            name = "advertisement_for_the_user",
+            joinColumns = @JoinColumn(name = "advertising_banner_id",referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    Set<AdvertisingBanner> advertisingBannerSet;
 
     public User(Long id, String email, BigDecimal totalOrderPrice){
         this.id=id;
