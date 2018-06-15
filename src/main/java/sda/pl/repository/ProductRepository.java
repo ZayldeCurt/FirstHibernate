@@ -97,7 +97,6 @@ public class ProductRepository {
         }
     }
 
-
     public static List<Product> findAllWithPriceNetLessThan(BigDecimal price){
         Session session = null;
         try {

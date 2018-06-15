@@ -42,7 +42,7 @@ public class AdvertisingBannerRepository {
 //            String hql = "SELECT af FROM advertisement_for_the_user af"; //ma problem z taka tablica
 //            String hql = "SELECT a FROM AdvertisingBanner a"; //działa
             String hql = "SELECT a FROM AdvertisingBanner a " +
-                    "JOIN fetch a.userSet au JOIN fetch User u ON u.id=au.id"; //dobry trop ale jeszcze nie to zmienic albo rozwinąć
+                    "JOIN fetch a.userSet au JOIN fetch User u ON u.id=au.id";
             Query query = session.createQuery(hql);
             return query.getResultList();
         } catch (Exception e) {
@@ -64,9 +64,12 @@ public class AdvertisingBannerRepository {
 //                    "JOIN FETCH advertisement_for_the_user af ON a.id=af.advertising_banner_id " +
 //                    "JOIN FETCH User u ON af.user_id=u.id " +
 //                    "WHERE u.id=:id";
-            String hql = "SELECT a FROM AdvertisingBanner a WHERE a.id=:id";
+            String hql = "SELECT a FROM AdvertisingBanner a " +
+                    "JOIN fetch a.userSet au " +
+                    "JOIN fetch User u " +
+                    "ON u.id=au.id ";
             Query query = session.createQuery(hql);
-            query.setParameter("id", id);
+//            query.setParameter("id", id);
             return query.getResultList();
         } catch (Exception e) {
             e.printStackTrace();

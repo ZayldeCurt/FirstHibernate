@@ -25,4 +25,5 @@ public class ProductRepositoryTest {
     public void findProductWithMagic() {
         ProductRepository.findProductWithMagic(5L);
     }
+
 }

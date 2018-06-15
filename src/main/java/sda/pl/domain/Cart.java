@@ -25,7 +25,7 @@ public class Cart implements Serializable {
     @JoinColumn
     User user;
 
-    @OneToMany(mappedBy = "cart", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     Set<CartDetail> cartDetailSet;
 
     @Transient

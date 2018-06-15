@@ -122,8 +122,20 @@ public class App {
 //        List<ProductRating> allActiveByProductId = ProductRatingRepository.findAllActiveByProductId(1L);
 //        Optional<ProductRating> productRating1 = ProductRatingRepository.findProductRating(1L);
 
-//        List<AdvertisingBanner> advertisingBanners = AdvertisingBannerRepository.fingAdvertisingBannerForUser(1L);
-        List<AdvertisingBanner> all = AdvertisingBannerRepository.findAll();
-        all.forEach(a -> System.out.println(a.getId()));
+//     advertisingBanners.forEach(a-> System.out.println(a.getId()));
+//        List<AdvertisingBanner> all = AdvertisingBannerRepository.findAll();
+//        all.forEach(a -> System.out.println(a.getId()));
+
+        Optional<Product> product1 = ProductRepository.findProduct(1L);
+        User user =  UserRepository.findUser(1L).get();
+        ProductRating productRating = ProductRating.builder()
+                .product(product1.get())
+                .description("opis test z validatorem poza zakresie")
+                .isActive(true)
+                .rate(8)
+                .user(user)
+                .build();
+
+        ProductRatingRepository.saveOrUpdate(productRating);
     }
 }
