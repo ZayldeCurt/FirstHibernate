@@ -5,6 +5,7 @@ import org.hibernate.query.Query;
 import sda.pl.domain.Color;
 import sda.pl.HibernateUtil;
 import sda.pl.domain.Product;
+import sda.pl.domain.ProductType;
 import sda.pl.domain.WareHauseName;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -151,10 +152,11 @@ public class ProductRepository {
             CriteriaQuery<Product> select = query.select(from);
 //            query.where(cb.like(from.get("name"),"%"+name+"%"));
             Predicate whereNameLike = cb.like(from.get("name"),"%"+name+"%");
-            Predicate whiteProducct = cb.equal(from.get("color"), Color.WHITE);
+//            Predicate whiteProducct = cb.equal(from.get("color"), Color.WHITE);
 
-            Predicate whereNameLikeAndColorWhite = cb.and(whereNameLike,whiteProducct);
-            query.where(whereNameLikeAndColorWhite);
+//            Predicate whereNameLikeAndColorWhite = cb.and(whereNameLike,whiteProducct);
+//            Predicate whereNameLike = cb.and(whereNameLike);
+            query.where(whereNameLike);
             return session.createQuery(query).getResultList();
         } catch (Exception e) {
             e.printStackTrace();
@@ -192,4 +194,43 @@ public class ProductRepository {
             }
         }
     }
+
+    public static List<Product> findAllByCategory(ProductType productType) {
+        Session session = null;
+        try {
+            session = HibernateUtil.openSession();
+            String hql = "SELECT p FROM Product p where p.productType= :type";
+            Query query = session.createQuery(hql);
+            query.setParameter("type", productType);
+            List resultList = query.getResultList();
+            return resultList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+    public static List<Product> findAllByName(String name) {
+        Session session = null;
+        try {
+            session = HibernateUtil.openSession();
+            String hql = "SELECT p FROM Product p where p.name LIKE :name";
+            Query query = session.createQuery(hql);
+            query.setParameter("name", "%"+name+"%");
+            List resultList = query.getResultList();
+            return resultList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
 }

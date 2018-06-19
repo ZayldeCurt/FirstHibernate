@@ -5,6 +5,7 @@ import sda.pl.domain.Price;
 import sda.pl.domain.Product;
 import sda.pl.repository.CartRepository;
 import sda.pl.repository.ProductRepository;
+import sda.pl.repository.UserRepository;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,16 +22,27 @@ import java.util.Optional;
 
 @WebServlet(name = "AddProductToCartServlet",urlPatterns = "/AddProductToCart")
 public class AddProductToCartServlet extends HttpServlet {
+
+    public static final Long USER_ID = 1L;
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         long productAmount = Long.parseLong(request.getParameter("productAmount"));
         long productId = Long.parseLong(request.getParameter("productId"));
 
+        Cart cart = null;
+        Optional<Cart> cartByUserID = CartRepository.findCartByUserID(USER_ID);
+        if(cartByUserID.isPresent()){
+            cart = cartByUserID.get();
+        }
+        else {
+            cart = new Cart();
+            cart.setUser(UserRepository.findUser(USER_ID).get());
+        }
 
-        Cart cart = new Cart();
         Optional<Product> product = ProductRepository.findProduct(productId);
         if(product.isPresent()) {
             cart.addProductToCart(product.get(), productAmount);
-            CartRepository.saveCart(cart);
+            CartRepository.saveOrUpdateCart(cart);
         }
 
         PrintWriter writer = response.getWriter();

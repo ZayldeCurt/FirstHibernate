@@ -26,6 +26,9 @@ public class Product implements Serializable {
     @Enumerated(EnumType.STRING)
     Color color;
 
+    @Enumerated(EnumType.STRING)
+    ProductType productType;
+
     @OneToMany(mappedBy = "product")
     Set<OrderDetail> orderDetailSet;
 
